@@ -24,7 +24,7 @@ public class UserService {
                 user.getName(),
                 user.getEmail(),
                 user.getAge(),
-                user.getPets()
+                new ArrayList<>()
                 );
 
         users.put(newId, newUser);
@@ -38,14 +38,14 @@ public class UserService {
     }
 
     public UserDTO updateUser(Long id, UserDTO user) {
-        findUserById(id);
+        UserDTO oldUser = findUserById(id);
 
         UserDTO updatedUser = new UserDTO(
                 id,
                 user.getName(),
                 user.getEmail(),
                 user.getAge(),
-                user.getPets()
+                oldUser.getPets()
         );
         users.put(id, updatedUser);
         return updatedUser;
@@ -58,6 +58,10 @@ public class UserService {
         }
     }
 
+    public List<UserDTO> findAllUsers() {
+        return new ArrayList<>(users.values());
+    }
+
     public void addPet(Long id, PetDTO pet) {
         UserDTO userDTO = users.get(id);
         if (userDTO == null) {
@@ -67,5 +71,29 @@ public class UserService {
         pets.add(pet);
         userDTO.setPets(pets);
         users.put(id, userDTO);
+    }
+
+    public void updatePet(Long petId, PetDTO petDTO) {
+        UserDTO userDTO = users.get(petId);
+        if (userDTO == null) {
+            throw new NoSuchElementException("User with petId %s not found".formatted(petId));
+        }
+        List<PetDTO> pets = userDTO.getPets();
+        List<PetDTO> updatedPetsList = pets.stream()
+                .map(pet -> pet.getId().equals(petId) ? petDTO : pet)
+                .toList();
+
+        userDTO.setPets(updatedPetsList);
+        users.put(petId, userDTO);
+    }
+
+    public void deletePet(Long userId, Long petId) {
+        UserDTO userDTO = users.get(userId);
+        if (userDTO == null) {
+            throw new NoSuchElementException("User with id %s not found".formatted(petId));
+        }
+
+        List<PetDTO> pets = userDTO.getPets();
+        pets.removeIf(pet -> pet.getId().equals(petId));
     }
 }

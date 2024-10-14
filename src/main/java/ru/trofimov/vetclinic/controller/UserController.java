@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.trofimov.vetclinic.model.UserDTO;
 import ru.trofimov.vetclinic.service.UserService;
 
+import java.util.List;
+
 @RestController
 public class UserController {
 
@@ -48,5 +50,11 @@ public class UserController {
         log.info("Delete request for delete user with id={}", id);
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/users")
+    public List<UserDTO> findAllUsers() {
+        log.info("Get request for find all users");
+        return userService.findAllUsers();
     }
 }

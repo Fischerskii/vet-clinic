@@ -15,12 +15,15 @@ public class PetService {
     private Long idCounter;
     private final Map<Long, PetDTO> pets;
 
-    private final UserService userService;
+    private UserService userService;
 
-    @Autowired
-    public PetService(UserService userService) {
+    public PetService() {
         this.idCounter = 0L;
         this.pets = new HashMap<>();
+    }
+
+    @Autowired
+    public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
@@ -33,8 +36,8 @@ public class PetService {
                 petDto.getName(),
                 userId
         );
-        PetDTO createdPet = pets.put(newId, newPet);
-        userService.addPet(userId, createdPet);
+        pets.put(newId, newPet);
+        userService.addPet(userId, newPet);
         return newPet;
     }
 
@@ -47,13 +50,14 @@ public class PetService {
     public PetDTO updatePet(Long id, PetDTO petDto) {
         findByPetId(id);
 
-        PetDTO updatedPet = new PetDTO(
+        PetDTO pet = new PetDTO(
                 id,
                 petDto.getName(),
                 petDto.getUserId()
         );
-        pets.put(id, updatedPet);
-        return updatedPet;
+        pets.put(id, pet);
+        userService.updatePet(id, pet);
+        return pet;
     }
 
     public void deletePet(Long id) {
@@ -62,5 +66,7 @@ public class PetService {
         if (removedPet == null) {
             throw new NoSuchElementException("Pet with id %s not found".formatted(id));
         }
+
+        userService.deletePet(removedPet.getUserId(), id);
     }
 }
