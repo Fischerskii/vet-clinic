@@ -1,11 +1,11 @@
 package ru.trofimov.vetclinic.model;
 
-public class PetDTO {
+public class Pet {
     private Long id;
     private String name;
     private Long userId;
 
-    public PetDTO(Long id, String name, Long userId) {
+    public Pet(Long id, String name, Long userId) {
         this.id = id;
         this.name = name;
         this.userId = userId;
