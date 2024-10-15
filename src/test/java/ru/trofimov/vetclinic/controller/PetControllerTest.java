@@ -8,8 +8,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.trofimov.vetclinic.model.PetDTO;
-import ru.trofimov.vetclinic.model.UserDTO;
+import ru.trofimov.vetclinic.dto.PetDTO;
+import ru.trofimov.vetclinic.dto.UserDTO;
+import ru.trofimov.vetclinic.mapper.PetMapper;
+import ru.trofimov.vetclinic.model.Pet;
+import ru.trofimov.vetclinic.model.User;
 import ru.trofimov.vetclinic.service.PetService;
 import ru.trofimov.vetclinic.service.UserService;
 
@@ -32,10 +35,12 @@ class PetControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private PetService petService;
+    @Autowired
+    private PetMapper petMapper;
 
     @Test
     void shouldSuccessCreatePet() throws Exception {
-        UserDTO user = new UserDTO(
+        User user = new User(
                 null,
                 "sid",
                 "sid@mail.com",
@@ -43,7 +48,7 @@ class PetControllerTest {
                 new ArrayList<>()
         );
 
-        UserDTO createdUser = userService.createUser(user);
+        User createdUser = userService.createUser(user);
 
         PetDTO pet = new PetDTO(
                 null,
@@ -64,7 +69,7 @@ class PetControllerTest {
 
         PetDTO petResponse = objectMapper.readValue(createPetJson, PetDTO.class);
 
-        Assertions.assertNotNull(petResponse.getUserId());
+        Assertions.assertNotNull(petMapper.toEntity(petResponse).getUserId());
         Assertions.assertEquals(pet.getName(), petResponse.getName());
     }
 
@@ -87,7 +92,7 @@ class PetControllerTest {
 
     @Test
     void shouldSuccessDeletePet() throws Exception {
-        UserDTO user = new UserDTO(
+        User user = new User(
                 null,
                 "sid",
                 "sid@mail.com",
@@ -95,15 +100,15 @@ class PetControllerTest {
                 new ArrayList<>()
         );
 
-        UserDTO createdUser = userService.createUser(user);
+        User createdUser = userService.createUser(user);
 
-        PetDTO pet = new PetDTO(
+        Pet pet = new Pet(
                 null,
                 "charli",
                 createdUser.getId()
         );
 
-        PetDTO createdPet = petService.createPet(pet);
+        Pet createdPet = petService.createPet(pet);
 
         Assertions.assertNotNull(petService.findByPetId(createdPet.getId()));
 

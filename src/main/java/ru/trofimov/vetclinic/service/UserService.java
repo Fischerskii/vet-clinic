@@ -1,8 +1,8 @@
 package ru.trofimov.vetclinic.service;
 
 import org.springframework.stereotype.Service;
-import ru.trofimov.vetclinic.model.PetDTO;
-import ru.trofimov.vetclinic.model.UserDTO;
+import ru.trofimov.vetclinic.model.Pet;
+import ru.trofimov.vetclinic.model.User;
 
 import java.util.*;
 
@@ -10,16 +10,16 @@ import java.util.*;
 public class UserService {
 
     private Long idCounter;
-    private final Map<Long, UserDTO> users;
+    private final Map<Long, User> users;
 
     public UserService() {
         this.idCounter = 0L;
         this.users = new HashMap<>();
     }
 
-    public UserDTO createUser(UserDTO user) {
+    public User createUser(User user) {
         Long newId = ++idCounter;
-        UserDTO newUser = new UserDTO(
+        User newUser = new User(
                 newId,
                 user.getName(),
                 user.getEmail(),
@@ -31,16 +31,16 @@ public class UserService {
         return newUser;
     }
 
-    public UserDTO findUserById(Long id) {
+    public User findUserById(Long id) {
         return Optional.ofNullable(users.get(id))
                 .orElseThrow(() -> new NoSuchElementException(
                         "User with id %s not found".formatted(id)));
     }
 
-    public UserDTO updateUser(Long id, UserDTO user) {
-        UserDTO oldUser = findUserById(id);
+    public User updateUser(Long id, User user) {
+        User oldUser = findUserById(id);
 
-        UserDTO updatedUser = new UserDTO(
+        User updatedUser = new User(
                 id,
                 user.getName(),
                 user.getEmail(),
@@ -52,48 +52,48 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        UserDTO removedUser = users.remove(id);
+        User removedUser = users.remove(id);
         if (removedUser == null) {
             throw new NoSuchElementException("User with id %s not found".formatted(id));
         }
     }
 
-    public List<UserDTO> findAllUsers() {
+    public List<User> findAllUsers() {
         return new ArrayList<>(users.values());
     }
 
-    public void addPet(Long id, PetDTO pet) {
-        UserDTO userDTO = users.get(id);
-        if (userDTO == null) {
+    public void addPet(Long id, Pet pet) {
+        User user = users.get(id);
+        if (user == null) {
             throw new NoSuchElementException("User with id %s not found".formatted(id));
         }
-        List<PetDTO> pets = userDTO.getPets();
+        List<Pet> pets = user.getPets();
         pets.add(pet);
-        userDTO.setPets(pets);
-        users.put(id, userDTO);
+        user.setPets(pets);
+        users.put(id, user);
     }
 
-    public void updatePet(Long petId, PetDTO petDTO) {
-        UserDTO userDTO = users.get(petId);
-        if (userDTO == null) {
+    public void updatePet(Long petId, Pet pet) {
+        User user = users.get(petId);
+        if (user == null) {
             throw new NoSuchElementException("User with petId %s not found".formatted(petId));
         }
-        List<PetDTO> pets = userDTO.getPets();
-        List<PetDTO> updatedPetsList = pets.stream()
-                .map(pet -> pet.getId().equals(petId) ? petDTO : pet)
+        List<Pet> pets = user.getPets();
+        List<Pet> updatedPetsList = pets.stream()
+                .map(currentPet -> currentPet.getId().equals(petId) ? pet : currentPet)
                 .toList();
 
-        userDTO.setPets(updatedPetsList);
-        users.put(petId, userDTO);
+        user.setPets(updatedPetsList);
+        users.put(petId, user);
     }
 
     public void deletePet(Long userId, Long petId) {
-        UserDTO userDTO = users.get(userId);
-        if (userDTO == null) {
+        User user = users.get(userId);
+        if (user == null) {
             throw new NoSuchElementException("User with id %s not found".formatted(petId));
         }
 
-        List<PetDTO> pets = userDTO.getPets();
+        List<Pet> pets = user.getPets();
         pets.removeIf(pet -> pet.getId().equals(petId));
     }
 }

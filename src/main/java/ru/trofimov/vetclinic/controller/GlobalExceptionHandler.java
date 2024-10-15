@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.trofimov.vetclinic.model.ServerErrorDTO;
+import ru.trofimov.vetclinic.dto.ServerErrorDTO;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;

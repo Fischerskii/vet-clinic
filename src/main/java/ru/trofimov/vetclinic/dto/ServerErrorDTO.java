@@ -1,4 +1,4 @@
-package ru.trofimov.vetclinic.model;
+package ru.trofimov.vetclinic.dto;
 
 import java.time.LocalDateTime;
 

@@ -8,7 +8,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.trofimov.vetclinic.model.UserDTO;
+import ru.trofimov.vetclinic.dto.UserDTO;
+import ru.trofimov.vetclinic.mapper.UserMapper;
+import ru.trofimov.vetclinic.model.User;
 import ru.trofimov.vetclinic.service.UserService;
 
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ class UserControllerTest {
     private UserService userService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private UserMapper userMapper;
 
     @Test
     void shouldSuccessCreateUser() throws Exception {
@@ -77,7 +81,7 @@ class UserControllerTest {
 
     @Test
     void shouldSuccessSearchUser() throws Exception {
-        UserDTO user = new UserDTO(
+        User user = new User(
                 null,
                 "sid",
                 "sid@mail.com",
@@ -86,8 +90,9 @@ class UserControllerTest {
         );
 
         user = userService.createUser(user);
+        UserDTO userDTO = userMapper.toDTO(user);
 
-        String foundUserJson = mockMvc.perform(get("/users/{id}", user.getId()))
+        String foundUserJson = mockMvc.perform(get("/users/{id}", userDTO.getId()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()

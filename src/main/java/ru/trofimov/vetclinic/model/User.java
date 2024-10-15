@@ -1,32 +1,15 @@
 package ru.trofimov.vetclinic.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
-
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDTO {
-
-    @Null
+public class User {
     private Long id;
-
-    @NotBlank
     private String name;
-
-    @Email
     private String email;
-
-    @NotNull
     private Integer age;
-    private List<PetDTO> pets;
+    private List<Pet> pets;
 
-    public UserDTO() {}
-
-    public UserDTO(Long id, String name, String email, Integer age, List<PetDTO> pets) {
+    public User(Long id, String name, String email, Integer age, List<Pet> pets) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -66,17 +49,17 @@ public class UserDTO {
         this.age = age;
     }
 
-    public List<PetDTO> getPets() {
+    public List<Pet> getPets() {
         return pets;
     }
 
-    public void setPets(List<PetDTO> pets) {
+    public void setPets(List<Pet> pets) {
         this.pets = pets;
     }
 
     @Override
     public String toString() {
-        return "UserDTO{" +
+        return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +

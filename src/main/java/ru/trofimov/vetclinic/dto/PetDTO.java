@@ -1,4 +1,4 @@
-package ru.trofimov.vetclinic.model;
+package ru.trofimov.vetclinic.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
@@ -7,13 +7,13 @@ import jakarta.validation.constraints.NotNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PetDTO {
 
-    private Long id;
+    Long id;
 
-    @NotBlank
-    private String name;
+    @NotBlank(message = "Name cannot be null")
+    String name;
 
     @NotNull
-    private Long userId;
+    Long userId;
 
     public PetDTO() {
     }
@@ -28,15 +28,15 @@ public class PetDTO {
         return id;
     }
 
+    public @NotBlank String getName() {
+        return name;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public void setName(@NotBlank String name) {
         this.name = name;
     }
 
@@ -46,14 +46,5 @@ public class PetDTO {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    @Override
-    public String toString() {
-        return "PetDTO{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", userId=" + userId +
-                '}';
     }
 }
