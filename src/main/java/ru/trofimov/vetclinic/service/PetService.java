@@ -1,6 +1,5 @@
 package ru.trofimov.vetclinic.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.trofimov.vetclinic.model.Pet;
 
@@ -15,15 +14,11 @@ public class PetService {
     private Long idCounter;
     private final Map<Long, Pet> pets;
 
-    private UserService userService;
+    private final UserService userService;
 
-    public PetService() {
+    public PetService(UserService userService) {
         this.idCounter = 0L;
         this.pets = new HashMap<>();
-    }
-
-    @Autowired
-    public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
@@ -34,7 +29,7 @@ public class PetService {
         Pet newPet = new Pet(
                 newId,
                 pet.getName(),
-                userId
+                userService.findUserById(userId).getId()
         );
         pets.put(newId, newPet);
         userService.addPet(userId, newPet);
