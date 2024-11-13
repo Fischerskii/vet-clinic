@@ -1,8 +1,7 @@
 package ru.trofimov.vetclinic.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.trofimov.vetclinic.model.PetDTO;
+import ru.trofimov.vetclinic.model.Pet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,54 +12,56 @@ import java.util.Optional;
 public class PetService {
 
     private Long idCounter;
-    private final Map<Long, PetDTO> pets;
+    private final Map<Long, Pet> pets;
 
     private final UserService userService;
 
-    @Autowired
     public PetService(UserService userService) {
         this.idCounter = 0L;
         this.pets = new HashMap<>();
         this.userService = userService;
     }
 
-    public PetDTO createPet(PetDTO petDto) {
+    public Pet createPet(Pet pet) {
         Long newId = ++idCounter;
-        Long userId = petDto.getUserId();
+        Long userId = pet.getUserId();
 
-        PetDTO newPet = new PetDTO(
+        Pet newPet = new Pet(
                 newId,
-                petDto.getName(),
-                userId
+                pet.getName(),
+                userService.findUserById(userId).getId()
         );
-        PetDTO createdPet = pets.put(newId, newPet);
-        userService.addPet(userId, createdPet);
+        pets.put(newId, newPet);
+        userService.addPet(userId, newPet);
         return newPet;
     }
 
-    public PetDTO findByPetId(Long id) {
+    public Pet findByPetId(Long id) {
         return Optional.ofNullable(pets.get(id))
                 .orElseThrow(() -> new NoSuchElementException(
                         "Pet with id %s not found".formatted(id)));
     }
 
-    public PetDTO updatePet(Long id, PetDTO petDto) {
+    public Pet updatePet(Long id, Pet petDto) {
         findByPetId(id);
 
-        PetDTO updatedPet = new PetDTO(
+        Pet pet = new Pet(
                 id,
                 petDto.getName(),
                 petDto.getUserId()
         );
-        pets.put(id, updatedPet);
-        return updatedPet;
+        pets.put(id, pet);
+        userService.updatePet(id, pet);
+        return pet;
     }
 
     public void deletePet(Long id) {
-        PetDTO removedPet = pets.remove(id);
+        Pet removedPet = pets.remove(id);
 
         if (removedPet == null) {
             throw new NoSuchElementException("Pet with id %s not found".formatted(id));
         }
+
+        userService.deletePet(removedPet.getUserId(), id);
     }
 }

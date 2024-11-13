@@ -2,14 +2,14 @@ package ru.trofimov.vetclinic.model;
 
 import java.util.List;
 
-public class UserDTO {
+public class User {
     private Long id;
     private String name;
     private String email;
     private Integer age;
-    private List<PetDTO> pets;
+    private List<Pet> pets;
 
-    public UserDTO(Long id, String name, String email, Integer age, List<PetDTO> pets) {
+    public User(Long id, String name, String email, Integer age, List<Pet> pets) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -49,11 +49,22 @@ public class UserDTO {
         this.age = age;
     }
 
-    public List<PetDTO> getPets() {
+    public List<Pet> getPets() {
         return pets;
     }
 
-    public void setPets(List<PetDTO> pets) {
+    public void setPets(List<Pet> pets) {
         this.pets = pets;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", age=" + age +
+                ", pets=" + pets +
+                '}';
     }
 }
